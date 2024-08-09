@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-// Преобразуем римские числа в арабские
+// Функция преобразует римские числа в арабские
 func romanToArabic(roman string) (int, error) {
 	romanNumerals := map[string]int{
 		"M": 1000, "CM": 900, "D": 500, "CD": 400,
@@ -38,12 +38,14 @@ func romanToArabic(roman string) (int, error) {
 	return result, nil
 }
 
+// Валидация римского числа по регулярному выражению
 func validateRoman(roman string) bool {
 	pattern := `^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$`
 	match, _ := regexp.MatchString(pattern, roman)
 	return match
 }
 
+// Функция преобразует арабское число в римское
 func arabicToRoman(arabic int) string {
 	arabicNumerals := []int{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1}
 	romanNumerals := []string{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"}
@@ -77,7 +79,13 @@ func main() {
 		a, err1 := romanToArabic(input1)
 		b, err2 := romanToArabic(input2)
 		if err1 != nil || err2 != nil {
-			fmt.Printf("Ошибка: %v\n", err1)
+			var errMsg string
+			if err1 != nil {
+				errMsg = err1.Error()
+			} else {
+				errMsg = err2.Error()
+			}
+			fmt.Printf("Ошибка: %v\n", errMsg)
 			return
 		}
 		processOperation(a, b, operation, true)
@@ -85,7 +93,13 @@ func main() {
 		a, err1 := strconv.Atoi(input1)
 		b, err2 := strconv.Atoi(input2)
 		if err1 != nil || err2 != nil {
-			fmt.Printf("Ошибка: %v\n", err1)
+			var errMsg string
+			if err1 != nil {
+				errMsg = err1.Error()
+			} else {
+				errMsg = err2.Error()
+			}
+			fmt.Printf("Ошибка: %v\n", errMsg)
 			return
 		}
 		if a < 1 || a > 10 || b < 1 || b > 10 {
@@ -96,6 +110,7 @@ func main() {
 	}
 }
 
+// Функция для выполнения и вывода результата операции
 func processOperation(a, b int, operation string, isRoman bool) {
 	var result int
 	switch operation {
