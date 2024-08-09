@@ -2,31 +2,47 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 )
 
 // Преобразуем римские числа в арабские
 func romanToArabic(roman string) (int, error) {
-	romanNumerals := map[rune]int{'I': 1, 'V': 5, 'X': 10}
-	result := 0
-	prevValue := 0
-
-	for i := len(roman) - 1; i >= 0; i-- {
-		value := romanNumerals[rune(roman[i])]
-		if value == 0 {
-			return 0, fmt.Errorf("некорректное римское число")
-		}
-		if value < prevValue {
-			result -= value
-		} else {
-			result += value
-		}
-		prevValue = value
+	romanNumerals := map[string]int{
+		"M": 1000, "CM": 900, "D": 500, "CD": 400,
+		"C": 100, "XC": 90, "L": 50, "XL": 40,
+		"X": 10, "IX": 9, "V": 5, "IV": 4, "I": 1,
 	}
+	result := 0
+	i := 0
+
+	for i < len(roman) {
+		if i+1 < len(roman) && romanNumerals[roman[i:i+2]] > 0 {
+			result += romanNumerals[roman[i:i+2]]
+			i += 2
+		} else if romanNumerals[roman[i:i+1]] > 0 {
+			result += romanNumerals[roman[i:i+1]]
+			i++
+		} else {
+			return 0, fmt.Errorf("Ошибка: некорректное римское число")
+		}
+	}
+
+	if !validateRoman(roman) {
+		return 0, fmt.Errorf("Ошибка: некорректное римское число")
+	}
+
 	if result < 1 || result > 10 {
-		return 0, fmt.Errorf("число вне допустимого диапазона 1-10")
+		return 0, fmt.Errorf("Ошибка: число вне допустимого диапазона 1-10")
 	}
 	return result, nil
+}
+
+// Дополнительная функция для валидации правильности римского числа
+func validateRoman(roman string) bool {
+	pattern := `^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$`
+	match, _ := regexp.MatchString(pattern, roman)
+	return match
 }
 
 // Преобразуем арабские числа в римские
@@ -59,7 +75,7 @@ func main() {
 		return true
 	}
 
-	if isRoman(input1) && isRoman(input2) { // проверяем, являются ли оба значения римскими числами
+	if isRoman(input1) && isRoman(input2) {
 		a, err1 := romanToArabic(input1)
 		b, err2 := romanToArabic(input2)
 		if err1 != nil || err2 != nil {
@@ -67,7 +83,7 @@ func main() {
 			return
 		}
 		processOperation(a, b, operation, true)
-	} else { // обрабатываем арабские числа
+	} else {
 		a, err1 := strconv.Atoi(input1)
 		b, err2 := strconv.Atoi(input2)
 		if err1 != nil || err2 != nil {
@@ -102,7 +118,6 @@ func processOperation(a, b int, operation string, isRoman bool) {
 		return
 	}
 
-	// Дополнительная проверка для римских чисел
 	if isRoman {
 		if result < 1 {
 			fmt.Println("Ошибка: Результат римской арифметики не может быть меньше 1.")
@@ -113,4 +128,3 @@ func processOperation(a, b int, operation string, isRoman bool) {
 		fmt.Println(result)
 	}
 }
-
