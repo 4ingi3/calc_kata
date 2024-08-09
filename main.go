@@ -24,28 +24,26 @@ func romanToArabic(roman string) (int, error) {
 			result += romanNumerals[roman[i:i+1]]
 			i++
 		} else {
-			return 0, fmt.Errorf("Ошибка: некорректное римское число")
+			return 0, fmt.Errorf("некорректное римское число")
 		}
 	}
 
 	if !validateRoman(roman) {
-		return 0, fmt.Errorf("Ошибка: некорректное римское число")
+		return 0, fmt.Errorf("некорректное римское число")
 	}
 
 	if result < 1 || result > 10 {
-		return 0, fmt.Errorf("Ошибка: число вне допустимого диапазона 1-10")
+		return 0, fmt.Errorf("число вне допустимого диапазона 1-10")
 	}
 	return result, nil
 }
 
-// Дополнительная функция для валидации правильности римского числа
 func validateRoman(roman string) bool {
 	pattern := `^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$`
 	match, _ := regexp.MatchString(pattern, roman)
 	return match
 }
 
-// Преобразуем арабские числа в римские
 func arabicToRoman(arabic int) string {
 	arabicNumerals := []int{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1}
 	romanNumerals := []string{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"}
@@ -66,7 +64,7 @@ func main() {
 	fmt.Print("Введите выражение (например, 2 + 2 или II + III): ")
 	fmt.Scanf("%s %s %s", &input1, &operation, &input2)
 
-	isRoman := func(s string) bool { // функция проверки на римские числа
+	isRoman := func(s string) bool {
 		for _, char := range s {
 			if _, ok := map[rune]int{'I': 1, 'V': 5, 'X': 10}[char]; !ok {
 				return false
@@ -79,7 +77,7 @@ func main() {
 		a, err1 := romanToArabic(input1)
 		b, err2 := romanToArabic(input2)
 		if err1 != nil || err2 != nil {
-			fmt.Println(err1.Error())
+			fmt.Printf("Ошибка: %v\n", err1)
 			return
 		}
 		processOperation(a, b, operation, true)
@@ -87,7 +85,7 @@ func main() {
 		a, err1 := strconv.Atoi(input1)
 		b, err2 := strconv.Atoi(input2)
 		if err1 != nil || err2 != nil {
-			fmt.Println("Ошибка: Некорректное арабское число.")
+			fmt.Printf("Ошибка: %v\n", err1)
 			return
 		}
 		if a < 1 || a > 10 || b < 1 || b > 10 {
