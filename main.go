@@ -102,9 +102,15 @@ func processOperation(a, b int, operation string, isRoman bool) {
 		return
 	}
 
+	// Дополнительная проверка для римских чисел
 	if isRoman {
+		if result < 1 {
+			fmt.Println("Ошибка: Результат римской арифметики не может быть меньше 1.")
+			return
+		}
 		fmt.Println(arabicToRoman(result))
 	} else {
 		fmt.Println(result)
 	}
 }
+
